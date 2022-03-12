@@ -1,7 +1,7 @@
 /*
  * LIS2DS12.c
  *
- *  Created on: Jul 20, 2021
+ *  Created on: Aug 2, 2021
  *      Author: David
  */
 
@@ -9,22 +9,40 @@
 #include "main.h"
 #include "LIS2DS12.h"
 
-I2C_HandleTypeDef hi2c2;
+SPI_HandleTypeDef hspi3;
+#define LIS_SPI &hspi3
 
-static const uint8_t ADDR = 0x1E << 1; // 8 bit address. The LSB is for read(1) and write(0)
+void LIS_enable(){
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+}
+
+void LIS_disable(){
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+}
 
 void LIS_write_byte(uint8_t reg_addr, uint8_t data){
-	uint8_t buf[2] = {reg_addr, data};
-	HAL_I2C_Master_Transmit(&hi2c2, ADDR, buf, 2, 10);
+	LIS_enable();
+	HAL_SPI_Transmit(LIS_SPI, &reg_addr, 1, 10);
+	HAL_SPI_Receive(LIS_SPI, &data, 1, 10);
+	LIS_disable();
 }
 
 void LIS_read(uint8_t reg_addr, uint8_t *data, uint16_t len){
-	HAL_I2C_Master_Transmit(&hi2c2, ADDR, &reg_addr, 1, 10);
-	HAL_I2C_Master_Receive(&hi2c2, ADDR | 0x01, data, len, 10);
+	LIS_enable();
+	reg_addr = reg_addr | 0x80;
+	HAL_SPI_Transmit(LIS_SPI, &reg_addr, 1, 10);
+	HAL_SPI_Receive(LIS_SPI, data, len, 10);
+	LIS_disable();
 }
 
-void LIS_init(){
-	LIS_write_byte(CTRL1, 0x30); // sets ODR to 50 Hz
+uint8_t LIS_init(){
+	uint8_t id;
+	LIS_read(WHO_AM_I, &id, 1);
+	if (id == 0x43){
+		LIS_write_byte(CTRL1, 0x30);
+		return 1;
+	}
+	return 0;
 }
 
 void LIS_acc(LISrawData* raw_data){
@@ -34,4 +52,3 @@ void LIS_acc(LISrawData* raw_data){
 	raw_data->y = (int16_t) ((data[3] << 8) | data[2]);
 	raw_data->z = (int16_t) ((data[5] << 8) | data[4]);
 }
-

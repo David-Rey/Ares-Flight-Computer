@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,6 +50,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -58,14 +60,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define FLASH_CS_Pin GPIO_PIN_4
+#define FLASH_CS_GPIO_Port GPIOA
+#define SD_CS_Pin GPIO_PIN_4
+#define SD_CS_GPIO_Port GPIOC
 #define BOOT1_Pin GPIO_PIN_2
 #define BOOT1_GPIO_Port GPIOB
-#define BMP_CS_Pin GPIO_PIN_12
-#define BMP_CS_GPIO_Port GPIOB
-#define BMX_CS_Pin GPIO_PIN_8
-#define BMX_CS_GPIO_Port GPIOA
-#define LED_STAT_Pin GPIO_PIN_5
-#define LED_STAT_GPIO_Port GPIOB
+#define RW2_Pin GPIO_PIN_14
+#define RW2_GPIO_Port GPIOB
+#define RW1_Pin GPIO_PIN_15
+#define RW1_GPIO_Port GPIOB
+#define Fire_Pin GPIO_PIN_8
+#define Fire_GPIO_Port GPIOB
+#define Arm_Pin GPIO_PIN_9
+#define Arm_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
