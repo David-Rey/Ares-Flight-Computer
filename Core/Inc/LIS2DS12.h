@@ -1,7 +1,7 @@
 /*
  * LIS2DS12.h
  *
- *  Created on: Aug 2, 2021
+ *  Created on: Jul 20, 2021
  *      Author: David
  */
 
@@ -27,11 +27,9 @@ typedef enum{
 	OUT_Z_H			= 0x2D
 } lisRegisters;
 
-void LIS_enable();
-void LIS_disable();
 void LIS_write_byte(uint8_t reg_addr, uint8_t data);
 void LIS_read(uint8_t reg_addr, uint8_t *data, uint16_t length);
-uint8_t LIS_init();
+void LIS_init();
 void LIS_acc(LISrawData* raw_data);
 
 #endif /* SRC_LIS2DS12_H_ */
